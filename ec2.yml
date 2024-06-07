@@ -1,0 +1,14 @@
+Ec2Instance:
+  Type: AWS::EC2::Instance
+  Properties:
+    AvailabilityZone: !Ref AvailabilityZone
+    InstanceType: !Ref InstanceType
+    ImageId: ami-0fd13232c2c7fc2c3 # ubuntu 22.04
+    KeyName: !Ref Ec2InstanceKeyPar
+    SecurityGroups:
+      - !Ref Ec2InstanceSecurityGroup
+    # volumenes EBS
+    BlockDeviceMappings:
+      - DeviceName: /dev/sda1
+        Ebs:
+          VolumeSize: !Ref InstanceStorageSize
