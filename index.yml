@@ -42,12 +42,12 @@ Parameters:
       - test
 Resources:
   # Ec2 instance
-  !Include ec2.yaml
+  !Include services/ec2.yaml
   # Elastic IP
-  !Include eip.yaml
+  !Include services/eip.yaml
   # Security Group
-  !Include ec2SecurityGroup.yaml
+  !Include services/ec2SecurityGroup.yaml
   # Ec2 ssh key access 
-  !Include ec2keyPair.yaml
+  !Include services/ec2keyPair.yaml
   # S3 bucket
-  !Include s3.yaml
+  !Include services/s3.yaml
