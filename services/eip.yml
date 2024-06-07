@@ -1,2 +1,0 @@
-ElasticIp:
-  Type: AWS::EC2::EIP

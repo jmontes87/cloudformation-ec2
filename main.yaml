@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: Create enviroment
+Description: Create environment
 
 Parameters:
   # Zonas disponibles
@@ -8,7 +8,6 @@ Parameters:
     Description: The Availability Zone to use
     Default: us-east-1a
     AllowedValues:
-# (us-east-1a, us-east-1b, us-east-1c)
       - us-east-1a
       - us-east-1b
       - us-east-1c
@@ -18,7 +17,6 @@ Parameters:
     Description: EC2 instance type
     Default: t2.micro
     AllowedValues:
-# (t2.micro, t2.small, t2.medium)
       - t2.micro
       - t2.small
       - t2.medium
@@ -27,27 +25,34 @@ Parameters:
     Type: Number
     Description: Size of the root EBS volume in GB
     AllowedValues:
-# (9, 12, 16)
       - 8
       - 12
       - 16
   # Variables de entorno
-  Enviroment:
+  Environment:
     Type: String
-    Description: Infrastructure enviroment
+    Description: Infrastructure environment 
     AllowedValues:
-# (prod, dev, test)
       - prod
       - dev
       - test
+  AWSRegion:
+    Type: String
+    Description: Region
+    Default: us-east-1  # Añade un valor predeterminado si es necesario
+    AllowedValues:
+      - us-east-1
+      - us-west-2
+      - eu-west-1
+
 Resources:
   # Ec2 instance
-  !Include services/ec2.yaml
+  #!Include services/ec2.yaml
   # Elastic IP
-  !Include services/eip.yaml
+  #!Include services/eip.yaml
   # Security Group
-  !Include services/ec2SecurityGroup.yaml
+  #!Include services/ec2SecurityGroup.yaml
   # Ec2 ssh key access 
-  !Include services/ec2keyPair.yaml
+  #!Include services/ec2keyPair.yaml
   # S3 bucket
-  !Include services/s3.yaml
+  #!Include services/s3.yaml

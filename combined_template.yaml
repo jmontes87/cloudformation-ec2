@@ -1,0 +1,101 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Create environment
+
+Parameters:
+  # Zonas disponibles
+  AvailabilityZone:
+    Type: String
+    Description: The Availability Zone to use
+    Default: us-east-1a
+    AllowedValues:
+      - us-east-1a
+      - us-east-1b
+      - us-east-1c
+  # EC2 - instance types
+  InstanceType:
+    Type: String
+    Description: EC2 instance type
+    Default: t2.micro
+    AllowedValues:
+      - t2.micro
+      - t2.small
+      - t2.medium
+  # EC2 - storage size
+  InstanceStorageSize:
+    Type: Number
+    Description: Size of the root EBS volume in GB
+    Default: 55
+    AllowedValues:
+      - 55
+      - 65
+      - 75
+  # Variables de entorno
+  Environment:
+    Type: String
+    Description: Infrastructure environment 
+    AllowedValues:
+      - prod
+      - dev
+      - test
+  AWSRegion:
+    Type: String
+    Description: Region
+    Default: us-east-1  # Añade un valor predeterminado si es necesario
+    AllowedValues:
+      - us-east-1
+      - us-west-2
+      - eu-west-1
+Resources:
+  # Ec2 instance
+  #!Include services/ec2.yaml
+  # Elastic IP
+  #!Include services/eip.yaml
+  # Security Group
+  #!Include services/ec2SecurityGroup.yaml
+  # Ec2 ssh key access 
+  #!Include services/ec2keyPair.yaml
+  # S3 bucket
+  #!Include services/s3.yaml
+  Ec2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      AvailabilityZone: !Ref AvailabilityZone
+      InstanceType: !Ref InstanceType
+      ImageId: ami-0fd13232c2c7fc2c3 # ubuntu 22.04
+      KeyName: !Ref Ec2InstanceKeyPar
+      SecurityGroups:
+        - !Ref Ec2InstanceSecurityGroup
+      # volumenes EBS
+      BlockDeviceMappings:
+        - DeviceName: /dev/sda1
+          Ebs:
+            VolumeSize: !Ref InstanceStorageSize
+  ElasticIp:
+    Type: AWS::EC2::EIP
+  Ec2InstanceSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow SSH, HTTP and MYSQL 
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0      
+        - IpProtocol: tcp
+          FromPort: 3306
+          ToPort: 3306
+          CidrIp: 0.0.0.0/0       
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+  Ec2InstanceKeyPar:
+    Type: AWS::EC2::KeyPair
+    Properties:
+      KeyName: Ec2InstanceKeyPar
+  BucketFiles:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub
+        - ${env}-static-files-1987
+        - env: !Ref Environment

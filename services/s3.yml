@@ -1,6 +1,0 @@
-BucketFiles:
-  Type: AWS::S3::Bucket
-  Properties:
-    BucketName: !Sub
-      - ${env}.static-files
-      - env: !Ref Enviroment
